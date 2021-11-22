@@ -1,16 +1,19 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:qr_code_example/pages/qr_scanner_page2.dart';
 
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
-class QRScannerPage extends StatefulWidget {
+class QRScannerPage2 extends StatefulWidget {
+  final String visitorId;
+
+  const QRScannerPage2({Key? key, required this.visitorId}) : super(key: key);
+
   @override
-  _QRScannerPageState createState() => _QRScannerPageState();
+  _QRScannerPage2State createState() => _QRScannerPage2State();
 }
 
-class _QRScannerPageState extends State<QRScannerPage> {
+class _QRScannerPage2State extends State<QRScannerPage2> {
   final qrKey = GlobalKey(debugLabel: 'QR');
 
   QRViewController? qrViewController;
@@ -39,7 +42,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Visitors Scanner'),
+        title: const Text('Sales Men Scanner'),
       ),
       body: SafeArea(
         child: Stack(
@@ -90,7 +93,8 @@ class _QRScannerPageState extends State<QRScannerPage> {
           title: const Text('AlertDialog Title'),
           content: Column(
             children: [
-              Text('Vistor: ${barcode!.code}'),
+              Text('Vistor: ${widget.visitorId}'),
+              Text('Sales Man: ${barcode!.code}'),
             ],
           ),
           actions: <Widget>[
@@ -99,13 +103,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
               child: const Text('Cancel'),
             ),
             TextButton(
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      QRScannerPage2(visitorId: barcode!.code),
-                ),
-              ),
+              onPressed: () => Navigator.pop(context, 'OK'),
               child: const Text('OK'),
             ),
           ],
