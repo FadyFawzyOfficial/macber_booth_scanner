@@ -89,6 +89,8 @@ class _QRScannerPageState extends State<QRScannerPage> {
         builder: (BuildContext context) => AlertDialog(
           title: const Text('AlertDialog Title'),
           content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text('Vistor: ${barcode!.code}'),
             ],
@@ -99,13 +101,16 @@ class _QRScannerPageState extends State<QRScannerPage> {
               child: const Text('Cancel'),
             ),
             TextButton(
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      QRScannerPage2(visitorId: barcode!.code),
-                ),
-              ),
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        QRScannerPage2(visitorId: barcode!.code),
+                  ),
+                ).then((_) => qrViewController.resumeCamera());
+              },
               child: const Text('OK'),
             ),
           ],

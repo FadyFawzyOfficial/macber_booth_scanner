@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:qr_code_example/pages/qr_scanner_page.dart';
 
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
@@ -92,6 +93,8 @@ class _QRScannerPage2State extends State<QRScannerPage2> {
         builder: (BuildContext context) => AlertDialog(
           title: const Text('AlertDialog Title'),
           content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text('Vistor: ${widget.visitorId}'),
               Text('Sales Man: ${barcode!.code}'),
@@ -103,7 +106,15 @@ class _QRScannerPage2State extends State<QRScannerPage2> {
               child: const Text('Cancel'),
             ),
             TextButton(
-              onPressed: () => Navigator.pop(context, 'OK'),
+              onPressed: () {
+                Navigator.popUntil(context, (route) => route.isFirst);
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => QRScannerPage(),
+                  ),
+                );
+              },
               child: const Text('OK'),
             ),
           ],
