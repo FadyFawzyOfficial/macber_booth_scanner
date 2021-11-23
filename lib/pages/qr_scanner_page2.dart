@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_code_example/pages/qr_scanner_page.dart';
+import 'package:qr_code_example/providers/sales_man_provider.dart';
 
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
@@ -15,6 +17,7 @@ class QRScannerPage2 extends StatefulWidget {
 }
 
 class _QRScannerPage2State extends State<QRScannerPage2> {
+  late SalesManProvider salesManProvider;
   final qrKey = GlobalKey(debugLabel: 'QR');
 
   QRViewController? qrViewController;
@@ -41,6 +44,7 @@ class _QRScannerPage2State extends State<QRScannerPage2> {
 
   @override
   Widget build(BuildContext context) {
+    salesManProvider = Provider.of<SalesManProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sales Men Scanner'),
@@ -88,17 +92,25 @@ class _QRScannerPage2State extends State<QRScannerPage2> {
       //* To prevent that we pause and resume camera work when we check for
       //* validity of found data.
       qrViewController.pauseCamera();
+
       showDialog<String>(
         context: context,
         builder: (BuildContext context) => AlertDialog(
-          title: const Text('AlertDialog Title'),
-          content: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Vistor: ${widget.visitorName}'),
-              Text('Sales Man: ${barcode!.code}'),
-            ],
+          title: const Text('Sales Man Data'),
+          content: FutureBuilder(
+            future: salesManProvider.getSalesMan(barcode!.code),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting)
+                return Center(child: CircularProgressIndicator());
+              else if (snapshot.error != null)
+                // Do error handling stuff here
+                return Center(child: Text('Check your internet conection'));
+              else
+                return Consumer<SalesManProvider>(
+                  builder: (context, salesManProvider, child) =>
+                      Text('Sales Man: ${salesManProvider.salesMan!.name}'),
+                );
+            },
           ),
           actions: <Widget>[
             TextButton(
