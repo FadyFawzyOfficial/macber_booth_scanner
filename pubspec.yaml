@@ -39,6 +39,8 @@ dependencies:
   qr_code_scanner: ^0.5.1
   # We would need to make HTTP calls.
   http: ^0.13.4
+  # The provider package.
+  provider: ^6.0.0
 
 dev_dependencies:
   flutter_test:
