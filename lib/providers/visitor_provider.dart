@@ -8,7 +8,8 @@ class VisitorProvider with ChangeNotifier {
 
   Future<void> getVisitor(String visitorId) async {
     try {
-      final response = await http.get(Uri.parse(''));
+      final response = await http.get(Uri.parse(
+          'https://test-217c0-default-rtdb.europe-west1.firebasedatabase.app/visitor.json'));
       visitor = Visitor.fromJson(response.body);
       notifyListeners();
     } catch (error) {

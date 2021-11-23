@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_code_example/pages/qr_scanner_page2.dart';
+import 'package:qr_code_example/providers/visitor_provider.dart';
 
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
@@ -11,6 +13,7 @@ class QRScannerPage extends StatefulWidget {
 }
 
 class _QRScannerPageState extends State<QRScannerPage> {
+  late VisitorProvider visitorProvider;
   final qrKey = GlobalKey(debugLabel: 'QR');
 
   QRViewController? qrViewController;
@@ -37,6 +40,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
 
   @override
   Widget build(BuildContext context) {
+    visitorProvider = Provider.of<VisitorProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Visitors Scanner'),
@@ -84,16 +88,25 @@ class _QRScannerPageState extends State<QRScannerPage> {
       //* To prevent that we pause and resume camera work when we check for
       //* validity of found data.
       qrViewController.pauseCamera();
+
       showDialog<String>(
         context: context,
         builder: (BuildContext context) => AlertDialog(
-          title: const Text('AlertDialog Title'),
-          content: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Vistor: ${barcode!.code}'),
-            ],
+          title: const Text('Visitor Data'),
+          content: FutureBuilder(
+            future: visitorProvider.getVisitor(barcode!.code),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting)
+                return Center(child: CircularProgressIndicator());
+              else if (snapshot.error != null)
+                // Do error handling stuff here
+                return Center(child: Text('Check your internet conection'));
+              else
+                return Consumer<VisitorProvider>(
+                  builder: (context, visitor, child) =>
+                      Text('Visitor: ${visitor.visitor!.name}'),
+                );
+            },
           ),
           actions: <Widget>[
             TextButton(
@@ -106,8 +119,8 @@ class _QRScannerPageState extends State<QRScannerPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        QRScannerPage2(visitorId: barcode!.code),
+                    builder: (context) => QRScannerPage2(
+                        visitorName: visitorProvider.visitor!.name),
                   ),
                 ).then((_) => qrViewController.resumeCamera());
               },

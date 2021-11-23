@@ -6,9 +6,9 @@ import 'package:qr_code_example/pages/qr_scanner_page.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class QRScannerPage2 extends StatefulWidget {
-  final String visitorId;
+  final String visitorName;
 
-  const QRScannerPage2({Key? key, required this.visitorId}) : super(key: key);
+  const QRScannerPage2({Key? key, required this.visitorName}) : super(key: key);
 
   @override
   _QRScannerPage2State createState() => _QRScannerPage2State();
@@ -96,7 +96,7 @@ class _QRScannerPage2State extends State<QRScannerPage2> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Vistor: ${widget.visitorId}'),
+              Text('Vistor: ${widget.visitorName}'),
               Text('Sales Man: ${barcode!.code}'),
             ],
           ),
