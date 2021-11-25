@@ -37,6 +37,7 @@ dependencies:
   # the platform view within Flutter. The integration with Flutter is seamless, 
   # much better than jumping into a native Activity or a ViewController to perform the scan.
   qr_code_scanner: ^0.5.1
+  http: ^0.13.4
 
 dev_dependencies:
   flutter_test:

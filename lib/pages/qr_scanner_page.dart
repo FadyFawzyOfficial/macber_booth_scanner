@@ -75,7 +75,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
     // so we want to listen to our scanned data and get the qr code
     // that the camera scanned for us.
     // Then we want to store this inside our state with a barcode variable.
-    qrViewController.scannedDataStream.listen((scanData) async {
+    qrViewController.scannedDataStream.first.then((scanData) {
       setState(() => this.barcode = scanData);
 
       //* Note that because onQRViewCreated function listens to a stream it will
@@ -83,7 +83,6 @@ class _QRScannerPageState extends State<QRScannerPage> {
       //! This could lead to launching multiple instances of the same page.
       //* To prevent that we pause and resume camera work when we check for
       //* validity of found data.
-      qrViewController.pauseCamera();
       showDialog<String>(
         context: context,
         builder: (BuildContext context) => AlertDialog(
@@ -97,7 +96,12 @@ class _QRScannerPageState extends State<QRScannerPage> {
           ),
           actions: <Widget>[
             TextButton(
-              onPressed: () => Navigator.pop(context, 'Cancel'),
+              onPressed: () => Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => QRScannerPage(),
+                ),
+              ),
               child: const Text('Cancel'),
             ),
             TextButton(
@@ -109,14 +113,13 @@ class _QRScannerPageState extends State<QRScannerPage> {
                     builder: (context) =>
                         QRScannerPage2(visitorId: barcode!.code),
                   ),
-                ).then((_) => qrViewController.resumeCamera());
+                );
               },
               child: const Text('OK'),
             ),
           ],
         ),
-        // Note that we resume camera work only after the user closes the dialog.
-      ).then((_) => qrViewController.resumeCamera());
+      );
     });
   }
 
